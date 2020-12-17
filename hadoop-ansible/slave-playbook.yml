@@ -1,0 +1,26 @@
+---
+- name: Configure Slave
+  hosts: slave_nodes
+
+  tasks:
+
+    - include_vars:
+        dir: ./master_slave_client_vars
+        name: my_vars
+
+    - name: create the to-share directory
+      file:
+        state: directory
+        path: '{{ my_vars.slave_data_dir }}'
+        
+
+
+    - name: Copy the core file to the slave-target
+      template:
+        dest: '/etc/hadoop/core-site.xml'
+        src: './hadoop_system_files/slave_files/core-site.xml'
+
+    - name: Copy the hdfs file to the slave-target
+      template:
+        dest: '/etc/hadoop/hdfs-site.xml'
+        src: './hadoop_system_files/slave_files/hdfs-site.xml'

@@ -1,0 +1,39 @@
+---
+- name: Prerequisties for hadoop
+  hosts: all
+  tasks:
+    - name: copy the packages at the target
+      copy:
+       dest: '/'
+       src: './packages'
+    
+    - name: Find all rpm files
+      find:
+        paths: "/packages"
+        patterns: "*.rpm"
+      register: rpm_result
+
+    - debug:
+        msg:
+          "{{ item }}"
+      loop:
+        - "{{ rpm_result }}"
+
+
+
+    - name: Install hadoop packages
+      yum:
+        name: '{{ rpm_result.files[0].path }}'
+        state: present
+
+    - name: Install jdk package
+      yum:
+        name: '{{ rpm_result.files[1].path }}'
+        state: present
+
+    - firewalld:
+        port: "9001/tcp"
+        permanent: true
+        state: enabled
+        immediate: yes
+
