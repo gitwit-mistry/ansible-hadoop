@@ -1,0 +1,21 @@
+---
+- name: Configure CLient
+  hosts: client_nodes
+
+  tasks:
+
+    - include_vars:
+        dir: ./master_slave_client_vars
+        name: my_vars
+
+    - name: create the to-share directory
+      file:
+        state: directory
+        path: '{{ my_vars.client_data_dir }}'
+        
+
+
+    - name: Copy the core file to the slave-target
+      template:
+        dest: '/etc/hadoop/core-site.xml'
+        src: './hadoop_system_files/slave_files/core-site.xml'

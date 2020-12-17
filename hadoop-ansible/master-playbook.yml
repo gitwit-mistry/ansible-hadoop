@@ -1,0 +1,45 @@
+---
+- name: Master node configured
+  hosts: master_node
+  vars:
+    master_data_dir: '/nn111'
+
+  tasks:
+    - include_vars:
+        file: './master_slave_client_vars/directory_vars.yml'
+        name: dir
+
+
+    - name: Copy the core site file  to target
+      template:
+        dest: '/etc/hadoop/core-site.xml'
+        src: './hadoop_system_files/master_files/core-site.xml'
+
+    - name: Copy the hdfs-site file to target 
+      template:
+        dest: '/etc/hadoop/hdfs-site.xml'
+        src: './hadoop_system_files/master_files/hdfs-site.xml'
+
+
+    - name: Format the name node
+      command: hadoop namenode -format
+
+    - name: get the master ip
+      debug:
+        msg: "{{ ansible_enp0s8.ipv4.address }}"
+      register: master_ip
+
+
+- name: Store the ip of master to a file
+  hosts: localhost
+  tasks:
+    
+    - debug:
+        msg: "{{ hostvars[groups['master_node'][0]]['ansible_enp0s8']['ipv4']['address'] }}"
+
+    - copy:
+        dest: './master_slave_client_vars/master_ip_file.yml'
+        content: "master_ip: '{{ hostvars[groups['master_node'][0]]['ansible_enp0s8']['ipv4']['address'] }}'"
+
+
+    

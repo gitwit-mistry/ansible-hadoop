@@ -1,0 +1,22 @@
+##### slave variables in this block
+
+
+slave_data_dir: /d222     # always give the full path always
+
+
+
+##### master variables in this block
+
+
+
+master_data_dir: /n222     # always give the complete path 
+
+
+
+
+##### client variables in this block
+
+
+
+
+client_data_dir: /c222
